@@ -1,0 +1,46 @@
+app-id: com.avojak.piholecontroller.Devel
+
+runtime: org.gnome.Platform
+runtime-version: '46'
+sdk: org.gnome.Sdk
+
+command: com.avojak.piholecontroller.Devel
+
+finish-args:
+  - '--device=dri'
+  - '--share=ipc'
+  - '--share=network'
+  - '--socket=wayland'
+  - '--socket=fallback-x11'
+
+cleanup:
+  - '/include'
+  - '/lib/pkgconfig'
+  - '/man'
+  - '/share/doc'
+  - '/share/man'
+  - '/share/pkgconfig'
+  - '*.la'
+  - '*.a'
+
+modules:
+  - name: librest
+    buildsystem: meson
+    config-opts:
+      - -Dexamples=false
+      - -Dgtk_doc=false
+      - -Dtests=false
+    sources:
+      - type: git
+        url: https://gitlab.gnome.org/gnome/librest.git
+        branch: master
+        commit: 23f2d27e5ea5479fb7a0d844afe5ef8d98ae2a6d
+
+  - name: piholecontroller
+    builddir: true
+    buildsystem: meson
+    config-opts:
+      - -Dprofile=development
+    sources:
+      - type: dir
+        path: ..

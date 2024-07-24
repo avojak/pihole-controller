@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Pi-hole Controller
+GenericName=Pi-hole Controller
+Comment=Control your Pi-hole servers
+Categories=Network;GTK;
+Exec=@APPLICATION_ID@
+Icon=@APPLICATION_ID@
+Terminal=false
+Type=Application
+X-GNOME-Gettext-Domain=@APPLICATION_ID@

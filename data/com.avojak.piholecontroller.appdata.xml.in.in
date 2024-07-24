@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2024 Andrew Vojak <andrew.vojak@gmail.com> -->
+<component type="desktop-application">
+  <id>@APPLICATION_ID@</id>
+  <name>Pi-hole Controller</name>
+  <summary>Control your Pi-hole servers</summary>
+  <developer_name>Andrew Vojak</developer_name>
+  <metadata_license>CC-BY-SA-4.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <description>
+    <p>Control your Pi-hole servers</p>
+  </description>
+  <provides>
+    <binary>@APPLICATION_ID@</binary>
+  </provides>
+  <launchable type="desktop-id">@APPLICATION_ID@.desktop</launchable>
+  <recommends>
+    <display_length compare="ge">360</display_length>
+  </recommends>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+  <!-- <releases>
+    TODO
+  </releases> -->
+  <!-- <screenshots>
+    TODO
+  </screenshots> -->
+  <content_rating type="oars-1.1">
+    <!-- <content_attribute id="social-info">mild</content_attribute>
+    <content_attribute id="social-contacts">mild</content_attribute>
+    <content_attribute id="social-chat">mild</content_attribute> -->
+  </content_rating>
+  <!-- <url type="homepage">https://github.com/avojak/aero</url>
+  <url type="bugtracker">https://github.com/avojak/aero/issues</url>
+  <url type="help">https://github.com/avojak/aero/issues</url> -->
+  <update_contact>andrew.vojak@gmail.com</update_contact>
+  <branding>
+    <color type="primary">#FFF</color>
+  </branding>
+  <custom>
+    <value key="x-appcenter-color-primary">#FFF</value>
+    <value key="x-appcenter-color-primary-text">#333</value>
+  </custom>
+</component>

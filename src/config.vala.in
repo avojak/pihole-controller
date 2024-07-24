@@ -1,0 +1,10 @@
+// SPDX-FileCopyrightText: 2024 Andrew Vojak
+// SPDX-License-Identifier: GPL-3.0-or-later
+
+public const string APP_ID = "@APP_ID@";
+public const string APP_NAME = "@APP_NAME@";
+public const string VERSION = "@VERSION@";
+public const string RESOURCE_PATH = "@RESOURCE_PATH@";
+public const string DEVELOPER_NAME = "@DEVELOPER_NAME@";
+public const string DEVELOPER_EMAIL = "@DEVELOPER_EMAIL@";
+public const string DEVELOPER_WEBSITE = "@DEVELOPER_WEBSITE@";
