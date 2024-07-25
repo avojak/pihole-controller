@@ -22,7 +22,7 @@ public class PiholeController.Core.SecretManager : GLib.Object {
     private SecretManager () {
     }
 
-    public void store_secret (int id, string secret) throws GLib.Error {
+    public void store_secret (int64 id, string secret) throws GLib.Error {
         debug ("Storing secret for id: %s", id.to_string ());
         var attributes = new GLib.HashTable<string, string> (str_hash, str_equal);
         attributes.insert ("version", SCHEMA_VERSION);
@@ -40,6 +40,30 @@ public class PiholeController.Core.SecretManager : GLib.Object {
                 warning ("Error while storing password: %s", e.message);
             }
         });
+    }
+
+    public string? retrieve_secret (int64 id) {
+        debug ("Retrieving secret for id: %s", id.to_string ());
+
+        //  store_dummy_secret ();
+
+        var label = APP_ID + ":" + id.to_string ();
+        var attributes = new GLib.HashTable<string, string> (str_hash, str_equal);
+        attributes.insert ("version", SCHEMA_VERSION);
+        attributes.insert ("database_id", id.to_string ());
+        // We can do this synchronously because each connection is already handled in its own thread
+        string? secret = null;
+        try {
+            secret = Secret.password_lookupv_sync (schema, attributes);
+        } catch (GLib.Error e) {
+            warning ("Error while looking up password: %s", e.message);
+        }
+        if (secret == null) {
+            warning ("Failed to load secret: %s", label);
+        } else {
+            debug ("Loaded secret for %s", label);
+        }
+        return secret;
     }
 
 }

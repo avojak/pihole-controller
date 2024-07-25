@@ -74,6 +74,10 @@ public class PiholeController.Application : Adw.Application {
         preferences_dialog.server_saved.connect ((server_details) => {
             PiholeController.Core.Client.get_instance ().server_repository.save_server (server_details);
         });
+        preferences_dialog.server_removed.connect ((server_details) => {
+            PiholeController.Core.Client.get_instance ().server_repository.remove_server (server_details);
+        });
+        preferences_dialog.set_servers (PiholeController.Core.Client.get_instance ().server_repository.get_servers ());
         preferences_dialog.show ();
     }
 

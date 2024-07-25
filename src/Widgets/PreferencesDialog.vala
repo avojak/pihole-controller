@@ -5,6 +5,8 @@
 
 public class PiholeController.PreferencesDialog : Adw.PreferencesWindow {
 
+    private PiholeController.ServersPreferencePage servers_page;
+
     public PreferencesDialog (PiholeController.MainWindow main_window) {
         Object (
             transient_for: main_window
@@ -12,16 +14,25 @@ public class PiholeController.PreferencesDialog : Adw.PreferencesWindow {
     }
 
     construct {
-        var servers_page = new PiholeController.ServersPreferencePage ();
+        servers_page = new PiholeController.ServersPreferencePage ();
         servers_page.server_saved.connect ((server_details) => {
             server_saved (server_details);
         });
-        servers_page.server_deleted.connect ((server_details) => {
-
+        servers_page.server_removed.connect ((server_details) => {
+            server_removed (server_details);
         });
+
+        //  var page = new Adw.PreferencesPage ();
+
         add (servers_page);
+        //  add (page);
+    }
+
+    public void set_servers (Gee.List<PiholeController.ServerDetails> servers) {
+        servers_page.set_servers (servers);
     }
 
     public signal void server_saved (PiholeController.ServerDetails details);
+    public signal void server_removed (PiholeController.ServerDetails details);
 
 }

@@ -89,11 +89,34 @@ public class PiholeController.Core.ServerDatabase : PiholeController.Core.SQLCli
         return servers;
     }
 
+    public void delete_server (PiholeController.ServerDetails server_details) {
+        var sql = "DELETE FROM servers WHERE id=$ID;";
+
+        Sqlite.Statement statement;
+        if (database.prepare_v2 (sql, sql.length, out statement) != Sqlite.OK) {
+            log_database_error (database.errcode (), database.errmsg ());
+            return;
+        }
+
+        statement.bind_int64 (1, server_details.id);
+
+        string err_msg;
+        int ec = database.exec (statement.expanded_sql (), null, out err_msg);
+        if (ec != Sqlite.OK) {
+            log_database_error (ec, err_msg);
+            debug ("SQL statement: %s", statement.expanded_sql ());
+        }
+        statement.reset ();
+    }
+
     private PiholeController.ServerDetails parse_server_row (Sqlite.Statement statement) {
         var num_columns = statement.column_count ();
         var server_details = new PiholeController.ServerDetails ();
         for (int i = 0; i < num_columns; i++) {
             switch (statement.column_name (i)) {
+                case "id":
+                    server_details.id = statement.column_int64 (i);
+                    break;
                 case "name":
                     server_details.name = statement.column_text (i);
                     break;

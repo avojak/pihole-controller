@@ -11,14 +11,12 @@ public class PiholeController.Core.Client : GLib.Object {
     }
 
     public PiholeController.Core.ServerRepository server_repository { get; construct; }
-    public PiholeController.Core.SecretManager secret_manager { get; construct; }
 
     private Client () {
     }
 
     construct {
         server_repository = new PiholeController.Core.ServerRepository (PiholeController.Core.ServerDatabase.get_instance ());
-        secret_manager = PiholeController.Core.SecretManager.get_instance ();
     }
 
 }

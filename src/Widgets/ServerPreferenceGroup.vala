@@ -5,13 +5,18 @@
 
 public class PiholeController.ServerPreferenceGroup : Adw.PreferencesGroup {
 
-    public PiholeController.ServerDetails details { get; construct; }
+    public unowned PiholeController.ServerDetails details { get; construct; }
     public bool expanded { get; set; }
 
     private Adw.EntryRow name_row;
     private Adw.EntryRow address_row;
     private Adw.SwitchRow https_row;
     private Adw.PasswordEntryRow api_token_row;
+
+    private string? saved_name = null;
+    private string? saved_address = null;
+    private bool? saved_use_https = null;
+    private string? saved_api_token = null;
 
     private Gtk.Button save_button;
 
@@ -27,6 +32,11 @@ public class PiholeController.ServerPreferenceGroup : Adw.PreferencesGroup {
     }
 
     construct {
+        saved_name = details.name;
+        saved_address = details.address;
+        saved_use_https = details.use_https;
+        saved_api_token = details.api_token;
+
         name_row = new Adw.EntryRow () {
             title = _("Server Name")
         };
@@ -87,6 +97,8 @@ public class PiholeController.ServerPreferenceGroup : Adw.PreferencesGroup {
 
         name_row.bind_property ("text", details, "name", GLib.BindingFlags.DEFAULT);
         address_row.bind_property ("text", details, "address", GLib.BindingFlags.DEFAULT);
+        https_row.bind_property ("active", details, "use_https", GLib.BindingFlags.DEFAULT);
+        api_token_row.bind_property ("text", details, "api_token", GLib.BindingFlags.DEFAULT);
         //  port_row.bind_property ("text", details, "port", GLib.BindingFlags.DEFAULT);
 
         bind_property ("expanded", row, "expanded", GLib.BindingFlags.BIDIRECTIONAL);
@@ -94,12 +106,18 @@ public class PiholeController.ServerPreferenceGroup : Adw.PreferencesGroup {
         // Validation handlers
         name_row.changed.connect (validate_entries);
         address_row.changed.connect (validate_entries);
+        https_row.notify["active"].connect (validate_entries);
         api_token_row.changed.connect (validate_entries);
 
         add (row);
 
         save_button.clicked.connect (() => {
             save_button_clicked ();
+            saved_name = details.name;
+            saved_address = details.address;
+            saved_use_https = details.use_https;
+            saved_api_token = details.api_token;
+            save_button.sensitive = false;
         });
         delete_button.clicked.connect (() => {
             delete_button_clicked ();
@@ -112,10 +130,10 @@ public class PiholeController.ServerPreferenceGroup : Adw.PreferencesGroup {
         validate_entries ();
 
         // TODO: Don't want to do this every time we add a group
-        Idle.add (() => {
-            address_row.grab_focus ();
-            return false;
-        });
+        //  Idle.add (() => {
+        //      address_row.grab_focus ();
+        //      return false;
+        //  });
     }
 
     private void validate_entries () {
@@ -124,7 +142,13 @@ public class PiholeController.ServerPreferenceGroup : Adw.PreferencesGroup {
         is_valid = validate_not_empty (address_row) && is_valid;
         is_valid = validate_not_empty (api_token_row) && is_valid;
 
-        save_button.sensitive = is_valid;
+        var is_changed = false;
+        is_changed = is_changed || (name_row.text != saved_name);
+        is_changed = is_changed || (address_row.text != saved_address);
+        is_changed = is_changed || (https_row.active != saved_use_https);
+        is_changed = is_changed || (api_token_row.text != saved_api_token);
+
+        save_button.sensitive = is_valid && is_changed;
     }
 
     private bool validate_not_empty (Adw.EntryRow row) {

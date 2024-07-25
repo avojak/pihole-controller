@@ -13,7 +13,7 @@ public class PiholeController.ServersPreferencePage : Adw.PreferencesPage {
         Object (
             name: "servers",
             title: _("Servers"),
-            icon_name: "application-x-executable-symbolic"
+            icon_name: "network-server-symbolic"
         );
     }
 
@@ -61,30 +61,40 @@ public class PiholeController.ServersPreferencePage : Adw.PreferencesPage {
                 use_https = false,
                 api_token = ""
             };
-            var group = new PiholeController.ServerPreferenceGroup.from_details (server_details, true);
-            group.delete_button_clicked.connect (() => {
-                groups.remove (group);
-                server_deleted (server_details);
-                Idle.add (() => {
-                    servers_group.remove (group);
-                    if (groups.size == 0) {
-                        servers_group.add (placeholder_row);
-                    }
-                    return false;
-                });
-            });
-            group.save_button_clicked.connect (() => {
-                server_saved (server_details);
-            });
-            groups.add (group);
-            servers_group.add (group);
-            if (groups.size == 1) {
-                servers_group.remove (placeholder_row);
-            }
+            add_preference_group (server_details, true);
         });
     }
 
+    public void set_servers (Gee.List<PiholeController.ServerDetails> servers) {
+        foreach (var server in servers) {
+            add_preference_group (server);
+        }
+    }
+
+    private void add_preference_group (PiholeController.ServerDetails server_details, bool expanded = false) {
+        var group = new PiholeController.ServerPreferenceGroup.from_details (server_details, expanded);
+        group.delete_button_clicked.connect (() => {
+            groups.remove (group);
+            server_removed (server_details);
+            Idle.add (() => {
+                servers_group.remove (group);
+                if (groups.size == 0) {
+                    servers_group.add (placeholder_row);
+                }
+                return false;
+            });
+        });
+        group.save_button_clicked.connect (() => {
+            server_saved (server_details);
+        });
+        groups.add (group);
+        servers_group.add (group);
+        if (groups.size == 1) {
+            servers_group.remove (placeholder_row);
+        }
+    }
+
     public signal void server_saved (PiholeController.ServerDetails details);
-    public signal void server_deleted (PiholeController.ServerDetails details);
+    public signal void server_removed (PiholeController.ServerDetails details);
 
 }
