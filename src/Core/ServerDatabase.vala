@@ -16,7 +16,7 @@ public class PiholeController.Core.ServerDatabase : PiholeController.Core.SQLCli
         );
     }
 
-    public void insert_server (PiholeController.ServerDetails server_details) {
+    public void insert_server (PiholeController.ServerConnectionDetails connection_details) {
         var sql = """
             INSERT INTO servers (name, address, port, use_https) 
             VALUES ($NAME, $ADDRESS, $PORT, $USE_HTTPS);
@@ -28,10 +28,10 @@ public class PiholeController.Core.ServerDatabase : PiholeController.Core.SQLCli
             return;
         }
 
-        statement.bind_text (1, server_details.name);
-        statement.bind_text (2, server_details.address);
-        statement.bind_int (3, server_details.port);
-        statement.bind_int (4, bool_to_int (server_details.use_https));
+        statement.bind_text (1, connection_details.name);
+        statement.bind_text (2, connection_details.address);
+        statement.bind_int (3, connection_details.port);
+        statement.bind_int (4, bool_to_int (connection_details.use_https));
 
         string err_msg;
         int ec = database.exec (statement.expanded_sql (), null, out err_msg);
@@ -39,12 +39,12 @@ public class PiholeController.Core.ServerDatabase : PiholeController.Core.SQLCli
             log_database_error (ec, err_msg);
             debug ("SQL statement: %s", statement.expanded_sql ());
         } else {
-            server_details.id = database.last_insert_rowid ();
+            connection_details.id = database.last_insert_rowid ();
         }
         statement.reset ();
     }
 
-    public void update_server (PiholeController.ServerDetails server_details) {
+    public void update_server (PiholeController.ServerConnectionDetails connection_details) {
         var sql = """
             UPDATE servers
             SET name = $NAME, address = $ADDRESS, port = $PORT, use_https = $USE_HTTPS
@@ -56,11 +56,11 @@ public class PiholeController.Core.ServerDatabase : PiholeController.Core.SQLCli
             log_database_error (database.errcode (), database.errmsg ());
             return;
         }
-        statement.bind_text (1, server_details.name);
-        statement.bind_text (2, server_details.address);
-        statement.bind_int (3, server_details.port);
-        statement.bind_int (4, bool_to_int (server_details.use_https));
-        statement.bind_int64 (5, server_details.id);
+        statement.bind_text (1, connection_details.name);
+        statement.bind_text (2, connection_details.address);
+        statement.bind_int (3, connection_details.port);
+        statement.bind_int (4, bool_to_int (connection_details.use_https));
+        statement.bind_int64 (5, connection_details.id);
 
         string err_msg;
         int ec = database.exec (statement.expanded_sql (), null, out err_msg);
@@ -71,8 +71,8 @@ public class PiholeController.Core.ServerDatabase : PiholeController.Core.SQLCli
         statement.reset ();
     }
 
-    public Gee.List<PiholeController.ServerDetails> get_servers () {
-        var servers = new Gee.ArrayList<PiholeController.ServerDetails> ();
+    public Gee.List<PiholeController.ServerConnectionDetails> get_servers () {
+        var servers = new Gee.ArrayList<PiholeController.ServerConnectionDetails> ();
 
         var sql = "SELECT * FROM servers;";
         Sqlite.Statement statement;
@@ -89,7 +89,7 @@ public class PiholeController.Core.ServerDatabase : PiholeController.Core.SQLCli
         return servers;
     }
 
-    public void delete_server (PiholeController.ServerDetails server_details) {
+    public void delete_server (PiholeController.ServerConnectionDetails connection_details) {
         var sql = "DELETE FROM servers WHERE id=$ID;";
 
         Sqlite.Statement statement;
@@ -98,7 +98,7 @@ public class PiholeController.Core.ServerDatabase : PiholeController.Core.SQLCli
             return;
         }
 
-        statement.bind_int64 (1, server_details.id);
+        statement.bind_int64 (1, connection_details.id);
 
         string err_msg;
         int ec = database.exec (statement.expanded_sql (), null, out err_msg);
@@ -109,31 +109,31 @@ public class PiholeController.Core.ServerDatabase : PiholeController.Core.SQLCli
         statement.reset ();
     }
 
-    private PiholeController.ServerDetails parse_server_row (Sqlite.Statement statement) {
+    private PiholeController.ServerConnectionDetails parse_server_row (Sqlite.Statement statement) {
         var num_columns = statement.column_count ();
-        var server_details = new PiholeController.ServerDetails ();
+        var connection_details = new PiholeController.ServerConnectionDetails ();
         for (int i = 0; i < num_columns; i++) {
             switch (statement.column_name (i)) {
                 case "id":
-                    server_details.id = statement.column_int64 (i);
+                    connection_details.id = statement.column_int64 (i);
                     break;
                 case "name":
-                    server_details.name = statement.column_text (i);
+                    connection_details.name = statement.column_text (i);
                     break;
                 case "address":
-                    server_details.address = statement.column_text (i);
+                    connection_details.address = statement.column_text (i);
                     break;
                 case "port":
-                    server_details.port = statement.column_int (i);
+                    connection_details.port = statement.column_int (i);
                     break;
                 case "use_https":
-                    server_details.use_https = int_to_bool (statement.column_int (i));
+                    connection_details.use_https = int_to_bool (statement.column_int (i));
                     break;
                 default:
                     break;
             }
         }
-        return server_details;
+        return connection_details;
     }
 
     public override string get_create_tables_sql () {

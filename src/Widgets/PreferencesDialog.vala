@@ -15,24 +15,25 @@ public class PiholeController.PreferencesDialog : Adw.PreferencesWindow {
 
     construct {
         servers_page = new PiholeController.ServersPreferencePage ();
-        servers_page.server_saved.connect ((server_details) => {
-            server_saved (server_details);
+        servers_page.server_saved.connect ((connection_details) => {
+            server_saved (connection_details);
         });
-        servers_page.server_removed.connect ((server_details) => {
-            server_removed (server_details);
+        servers_page.server_removed.connect ((connection_details) => {
+            server_removed (connection_details);
         });
 
         //  var page = new Adw.PreferencesPage ();
 
+        add (new PiholeController.GeneralPreferencePage ());
         add (servers_page);
         //  add (page);
     }
 
-    public void set_servers (Gee.List<PiholeController.ServerDetails> servers) {
+    public void set_servers (Gee.List<PiholeController.ServerConnectionDetails> servers) {
         servers_page.set_servers (servers);
     }
 
-    public signal void server_saved (PiholeController.ServerDetails details);
-    public signal void server_removed (PiholeController.ServerDetails details);
+    public signal void server_saved (PiholeController.ServerConnectionDetails details);
+    public signal void server_removed (PiholeController.ServerConnectionDetails details);
 
 }

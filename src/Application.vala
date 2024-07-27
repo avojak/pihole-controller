@@ -33,8 +33,24 @@ public class PiholeController.Application : Adw.Application {
 
     protected override void activate () {
         var client = PiholeController.Core.Client.get_instance ();
+
         main_window = new PiholeController.MainWindow (this);
         main_window.show ();
+
+        client.load_servers_async.begin ((obj, res) => {
+            var servers = client.load_servers_async.end (res);
+            foreach (var connection_details in servers) {
+                client.connection_manager.open (connection_details);
+            }
+            main_window.set_servers (servers);
+        });
+
+        client.connection_manager.server_version_received.connect (main_window.on_server_version_received);
+        client.connection_manager.summary_data_received.connect (main_window.on_summary_data_received);
+        client.connection_manager.top_items_received.connect (main_window.on_top_items_received);
+
+        client.server_repository.server_removed.connect (main_window.on_server_removed);
+        client.server_repository.server_removed.connect (client.connection_manager.close);
     }
 
     public override void startup () {
@@ -71,12 +87,11 @@ public class PiholeController.Application : Adw.Application {
             preferences_dialog = null;
             return true;
         });
-        preferences_dialog.server_saved.connect ((server_details) => {
-            PiholeController.Core.Client.get_instance ().server_repository.save_server (server_details);
-        });
-        preferences_dialog.server_removed.connect ((server_details) => {
-            PiholeController.Core.Client.get_instance ().server_repository.remove_server (server_details);
-        });
+
+        preferences_dialog.server_saved.connect (PiholeController.Core.Client.get_instance ().server_repository.save_server);
+        preferences_dialog.server_saved.connect (PiholeController.Core.Client.get_instance ().connection_manager.open);
+        preferences_dialog.server_saved.connect (main_window.add_server);
+        preferences_dialog.server_removed.connect (PiholeController.Core.Client.get_instance ().server_repository.remove_server);
         preferences_dialog.set_servers (PiholeController.Core.Client.get_instance ().server_repository.get_servers ());
         preferences_dialog.show ();
     }

@@ -2,3 +2,23 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  * SPDX-FileCopyrightText: 2024 Andrew Vojak <andrew.vojak@gmail.com>
  */
+
+.statistics-card {
+    color: rgb(255, 255, 255);
+}
+
+.total-queries-card {
+    background-color: @blue_3;
+}
+
+.queries-blocked-card {
+    background-color: @red_3;
+}
+
+.percent-blocked-card {
+    background-color: @orange_3;
+}
+
+.blocklist-card {
+    background-color: @green_3;
+}

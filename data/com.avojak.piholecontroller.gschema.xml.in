@@ -16,5 +16,25 @@
       <summary>Window height</summary>
       <description>Most recent window height</description>
     </key>
+    <key name="auto-refresh" type="b">
+      <default>true</default>
+      <summary>Automatically refresh data</summary>
+      <description>Whether or not to automatically poll the server for data</description>
+    </key>
+    <key name="num-top-domains" type="i">
+      <default>10</default>
+      <summary>Number of top domains to show</summary>
+      <description>The number of top domains to show in the home view</description>
+    </key>
+    <key name="num-top-clients" type="i">
+      <default>10</default>
+      <summary>Number of top clients to show</summary>
+      <description>The number of top clients to show in the home view</description>
+    </key>
+    <key name="num-top-blocked-clients" type="i">
+      <default>10</default>
+      <summary>Number of top blocked clients to show</summary>
+      <description>The number of top blocked clients to show in the home view</description>
+    </key>
   </schema>
 </schemalist>

@@ -7,8 +7,8 @@ public class PiholeController.MainWindow : Adw.ApplicationWindow {
 
     private Gtk.Stack base_stack;
 
-    //  private PiholeController.LibraryView library_view;
-    //  private PiholeController.EmulatorView emulator_view;
+    private PiholeController.HomeView home_view;
+    //  private PiholeController.StatisticsView statistics_view;
 
     private Adw.NavigationView navigation_view;
 
@@ -52,10 +52,10 @@ public class PiholeController.MainWindow : Adw.ApplicationWindow {
         //  library_view = new PiholeController.LibraryView ();
         //  library_view.game_selected.connect (on_game_selected);
 
-        //  var home_view = new PiholeController.LibraryView (); // TODO
+        home_view = new PiholeController.HomeView ();
 
         view_stack = new Adw.ViewStack ();
-        //  view_stack.add_titled_with_icon (home_view, "home", _("Home"), "go-home-symbolic");
+        view_stack.add_titled_with_icon (home_view, "home", _("Home"), "go-home-symbolic");
         //  view_stack.add_titled_with_icon (library_view, "library", _("Library"), "library-symbolic");
 
         view_switcher_bar = new Adw.ViewSwitcherBar () {
@@ -106,7 +106,6 @@ public class PiholeController.MainWindow : Adw.ApplicationWindow {
         //  //  base_stack.add_named (view_switcher, "view-switcher");
         base_stack.add_named (navigation_view, "view-switcher");
         base_stack.add_named (welcome_view, "welcome");
-        //  base_stack.add_named (emulator_view, "emulator");
 
         set_content (base_stack);
         add_breakpoint (breakpoint);
@@ -117,16 +116,51 @@ public class PiholeController.MainWindow : Adw.ApplicationWindow {
         }
 
         close_request.connect (() => {
+            PiholeController.Core.ServerConnectionManager.get_instance ().close_all ();
             save_window_state ();
             return Gdk.EVENT_PROPAGATE;
         });
         notify["maximized"].connect (save_window_state);
 
         base_stack.set_visible_child_name ("welcome");
-
-        //  view_stack.set_visible_child_name ("library");
+        view_stack.set_visible_child_name ("home");
 
         // Connect to signals
+    }
+
+    public void set_servers (Gee.List<PiholeController.ServerConnectionDetails> servers) {
+        Idle.add (() => {
+            if (servers.size == 0) {
+                base_stack.set_visible_child_name ("welcome");
+            } else {
+                home_view.set_servers (servers);
+                base_stack.set_visible_child_name ("view-switcher");
+            }
+            return false;
+        }, GLib.Priority.DEFAULT);
+    }
+
+    public void add_server (PiholeController.ServerConnectionDetails connection_details) {
+        Idle.add (() => {
+            home_view.add_server (connection_details);
+            return false;
+        }, GLib.Priority.DEFAULT);
+    }
+
+    public void on_server_version_received (int64 database_id, PiholeController.ServerVersion server_version) {
+        // TODO
+    }
+
+    public void on_summary_data_received (int64 database_id, PiholeController.SummaryData summary_data) {
+        home_view.on_summary_data_received (database_id, summary_data);
+    }
+
+    public void on_top_items_received (int64 database_id, PiholeController.TopItems top_items) {
+        home_view.on_top_items_received (database_id, top_items);
+    }
+
+    public void on_server_removed (int64 database_id) {
+        home_view.remove_server (database_id);
     }
 
     private void save_window_state () {

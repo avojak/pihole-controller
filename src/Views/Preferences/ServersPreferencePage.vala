@@ -54,28 +54,28 @@ public class PiholeController.ServersPreferencePage : Adw.PreferencesPage {
             foreach (var group in groups) {
                 group.expanded = false;
             }
-            var server_details = new PiholeController.ServerDetails () {
+            var connection_details = new PiholeController.ServerConnectionDetails () {
                 name = "Pi-hole",
                 address = "",
                 port = 80,
                 use_https = false,
                 api_token = ""
             };
-            add_preference_group (server_details, true);
+            add_preference_group (connection_details, true);
         });
     }
 
-    public void set_servers (Gee.List<PiholeController.ServerDetails> servers) {
+    public void set_servers (Gee.List<PiholeController.ServerConnectionDetails> servers) {
         foreach (var server in servers) {
             add_preference_group (server);
         }
     }
 
-    private void add_preference_group (PiholeController.ServerDetails server_details, bool expanded = false) {
-        var group = new PiholeController.ServerPreferenceGroup.from_details (server_details, expanded);
+    private void add_preference_group (PiholeController.ServerConnectionDetails connection_details, bool expanded = false) {
+        var group = new PiholeController.ServerPreferenceGroup.from_connection_details (connection_details, expanded);
         group.delete_button_clicked.connect (() => {
             groups.remove (group);
-            server_removed (server_details);
+            server_removed (connection_details);
             Idle.add (() => {
                 servers_group.remove (group);
                 if (groups.size == 0) {
@@ -85,7 +85,7 @@ public class PiholeController.ServersPreferencePage : Adw.PreferencesPage {
             });
         });
         group.save_button_clicked.connect (() => {
-            server_saved (server_details);
+            server_saved (connection_details);
         });
         groups.add (group);
         servers_group.add (group);
@@ -94,7 +94,7 @@ public class PiholeController.ServersPreferencePage : Adw.PreferencesPage {
         }
     }
 
-    public signal void server_saved (PiholeController.ServerDetails details);
-    public signal void server_removed (PiholeController.ServerDetails details);
+    public signal void server_saved (PiholeController.ServerConnectionDetails details);
+    public signal void server_removed (PiholeController.ServerConnectionDetails details);
 
 }

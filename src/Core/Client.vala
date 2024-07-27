@@ -11,12 +11,28 @@ public class PiholeController.Core.Client : GLib.Object {
     }
 
     public PiholeController.Core.ServerRepository server_repository { get; construct; }
+    public PiholeController.Core.ServerConnectionManager connection_manager { get; construct; }
 
     private Client () {
     }
 
     construct {
         server_repository = new PiholeController.Core.ServerRepository (PiholeController.Core.ServerDatabase.get_instance ());
+        connection_manager = PiholeController.Core.ServerConnectionManager.get_instance ();
+    }
+
+    public async Gee.List<PiholeController.ServerConnectionDetails> load_servers_async () {
+        GLib.SourceFunc callback = load_servers_async.callback;
+        Gee.List<PiholeController.ServerConnectionDetails> result = new Gee.ArrayList<PiholeController.ServerConnectionDetails> ();
+
+        new GLib.Thread<bool> ("scan-cores", () => {
+            result = server_repository.get_servers ();
+            Idle.add ((owned) callback);
+            return true;
+        });
+        yield;
+
+        return result;
     }
 
 }

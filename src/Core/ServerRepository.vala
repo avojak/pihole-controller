@@ -9,7 +9,7 @@ public class PiholeController.Core.ServerRepository : GLib.Object {
 
     private PiholeController.Core.ServerDatabase database;
     //  private PiholeController.Core.SecretManager secret_manager;
-    private Gee.List<PiholeController.ServerDetails> servers;
+    private Gee.List<PiholeController.ServerConnectionDetails> servers;
 
     private static Secret.Schema secret_schema = new Secret.Schema (
         APP_ID,
@@ -27,37 +27,38 @@ public class PiholeController.Core.ServerRepository : GLib.Object {
         }
     }
     
-    public void save_server (PiholeController.ServerDetails server_details) {
-        if (servers.contains (server_details)) {
-            debug ("Updating server: %s", server_details.to_string ());
-            database.update_server (server_details);
-            store_api_token (server_details);
+    public void save_server (PiholeController.ServerConnectionDetails connection_details) {
+        if (servers.contains (connection_details)) {
+            debug ("Updating server: %s", connection_details.to_string ());
+            database.update_server (connection_details);
+            store_api_token (connection_details);
         } else {
-            debug ("Saving new server: %s", server_details.to_string ());
-            servers.add (server_details);
-            database.insert_server (server_details);
-            store_api_token (server_details);
+            debug ("Saving new server: %s", connection_details.to_string ());
+            servers.add (connection_details);
+            database.insert_server (connection_details);
+            store_api_token (connection_details);
         }
     }
 
-    public Gee.List<PiholeController.ServerDetails> get_servers () {
+    public Gee.List<PiholeController.ServerConnectionDetails> get_servers () {
         return servers;
     }
 
-    public void remove_server (PiholeController.ServerDetails server_details) {
+    public void remove_server (PiholeController.ServerConnectionDetails connection_details) {
         // If the server details were never persisted, there's nothing to delete
-        if (server_details.id == -1) {
+        if (connection_details.id == -1) {
             return;
         }
-        servers.remove (server_details);
-        database.delete_server (server_details);
-        remove_api_token (server_details);
+        servers.remove (connection_details);
+        database.delete_server (connection_details);
+        remove_api_token (connection_details);
+        server_removed (connection_details.id);
     }
 
-    private void store_api_token (PiholeController.ServerDetails server_details) {
-        var attributes = build_secret_attributes (server_details.id);
-        var label = build_secret_label (server_details.id);
-        Secret.password_storev.begin (secret_schema, attributes, null, label, server_details.api_token, null, (obj, res) => {
+    private void store_api_token (PiholeController.ServerConnectionDetails connection_details) {
+        var attributes = build_secret_attributes (connection_details.id);
+        var label = build_secret_label (connection_details.id);
+        Secret.password_storev.begin (secret_schema, attributes, null, label, connection_details.api_token, null, (obj, res) => {
             try {
                 if (Secret.password_storev.end (res)) {
                     debug ("Stored secret: %s", label);
@@ -70,9 +71,9 @@ public class PiholeController.Core.ServerRepository : GLib.Object {
         });
     }
 
-    private void lookup_api_token (PiholeController.ServerDetails server_details) {
-        Secret.password_lookupv.begin (secret_schema, build_secret_attributes (server_details.id), null, (obj, res) => {
-            var label = build_secret_label (server_details.id);
+    private void lookup_api_token (PiholeController.ServerConnectionDetails connection_details) {
+        Secret.password_lookupv.begin (secret_schema, build_secret_attributes (connection_details.id), null, (obj, res) => {
+            var label = build_secret_label (connection_details.id);
             string? secret = null;
             try {
                 secret = Secret.password_lookupv.end (res);
@@ -83,14 +84,14 @@ public class PiholeController.Core.ServerRepository : GLib.Object {
                 warning ("Failed to load secret: %s", label);
             } else {
                 debug ("Loaded secret for %s", label);
-                server_details.api_token = secret;
+                connection_details.api_token = secret;
             }
         });
     }
 
-    private void remove_api_token (PiholeController.ServerDetails server_details) {
-        var label = build_secret_label (server_details.id);
-        var attributes = build_secret_attributes (server_details.id);
+    private void remove_api_token (PiholeController.ServerConnectionDetails connection_details) {
+        var label = build_secret_label (connection_details.id);
+        var attributes = build_secret_attributes (connection_details.id);
         Secret.password_clearv.begin (secret_schema, attributes, null, (obj, res) => {
             try {
                 if (Secret.password_clearv.end (res)) {
@@ -114,5 +115,7 @@ public class PiholeController.Core.ServerRepository : GLib.Object {
     private string build_secret_label (int64 id) {
         return APP_ID + ":" + id.to_string ();
     }
+
+    public signal void server_removed (int64 id);
 
 }

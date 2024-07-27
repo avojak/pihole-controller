@@ -24,4 +24,24 @@ public class PiholeController.Core.Settings : GLib.Settings {
         set { set_int ("window-height", value); }
     }
 
+    //  public bool auto_refresh {
+    //      get { return get_boolean ("auto-refresh"); }
+    //      set { set_boolean ("auto-refresh", value); }
+    //  }
+
+    //  public int top_domains {
+    //      get { return get_int ("top-domains"); }
+    //      set { set_int ("top-domains", value); }
+    //  }
+
+    //  public int top_clients {
+    //      get { return get_int ("top-clients"); }
+    //      set { set_int ("top-clients", value); }
+    //  }
+
+    //  public int top_blocked_clients {
+    //      get { return get_int ("top-blocked-clients"); }
+    //      set { set_int ("top-blocked-clients", value); }
+    //  }
+
 }

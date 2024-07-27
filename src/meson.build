@@ -20,17 +20,30 @@ pixels_files = files(
     'Application.vala',
     'MainWindow.vala',
     'Core' / 'Client.vala',
-    'Core' / 'SecretManager.vala',
+    'Core' / 'PiholeRestClient.vala',
+    'Core' / 'ServerConnection.vala',
+    'Core' / 'ServerConnectionManager.vala',
     'Core' / 'ServerDatabase.vala',
     'Core' / 'ServerRepository.vala',
     'Core' / 'Settings.vala',
     'Core' / 'SQLClient.vala',
-    'Models' / 'ServerDetails.vala',
+    'Models' / 'GravityLastUpdatedData.vala',
+    'Models' / 'ReplyData.vala',
+    'Models' / 'ServerPrivacyLevel.vala',
+    'Models' / 'ServerConnectionDetails.vala',
+    'Models' / 'ServerStatus.vala',
+    'Models' / 'ServerVersion.vala',
+    'Models' / 'SummaryData.vala',
+    'Models' / 'TopItems.vala',
+    'Views' / 'HomeView.vala',
     'Views' / 'WelcomeView.vala',
+    'Views' / 'Preferences' / 'GeneralPreferencePage.vala',
     'Views' / 'Preferences' / 'ServersPreferencePage.vala',
     'Widgets' / 'PreferencesDialog.vala',
+    'Widgets' / 'ServerHomeGroup.vala',
     'Widgets' / 'ServerPreferenceGroup.vala',
-    'Widgets' / 'ServerStatusIcon.vala'
+    'Widgets' / 'ServerStatusIcon.vala',
+    'Widgets' / 'StatisticTile.vala'
 )
 
 executable(
@@ -44,9 +57,10 @@ executable(
         dependency('gee-0.8'),
         dependency('libadwaita-1', version: '>= 1.5'),
         dependency('sqlite3'),
-        dependency('libsecret-1')
+        dependency('libsecret-1'),
         # dependency('libsoup-3.0'),
-        # dependency('rest-1.0')
+        dependency('rest-1.0'),
+        dependency('json-glib-1.0')
     ],
     vala_args: vala_args,
     install: true
