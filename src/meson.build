@@ -34,6 +34,7 @@ pixels_files = files(
     'Models' / 'ServerStatus.vala',
     'Models' / 'ServerVersion.vala',
     'Models' / 'SummaryData.vala',
+    'Models' / 'TimeSeriesData.vala',
     'Models' / 'TopItems.vala',
     'Views' / 'HomeView.vala',
     'Views' / 'WelcomeView.vala',
@@ -61,6 +62,7 @@ executable(
         # dependency('libsoup-3.0'),
         dependency('rest-1.0'),
         dependency('json-glib-1.0')
+        # dependency('livechart')
     ],
     vala_args: vala_args,
     install: true

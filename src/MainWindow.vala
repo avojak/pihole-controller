@@ -43,11 +43,18 @@ public class PiholeController.MainWindow : Adw.ApplicationWindow {
             tooltip_text = _("Menu")
         };
 
-        var import_button = new Gtk.Button () {
-            icon_name = "list-add-symbolic",
-            tooltip_text = _("Import"),
-            action_name = "app.import"
+        var status_button = new Gtk.Button () {
+            child = new Adw.ButtonContent () {
+                icon_name = "shield-safe-symbolic",
+                label = _("Blocking")
+            }
+            //  action_name = "app.import"
         };
+
+        var status_button_revealer = new Gtk.Revealer () {
+            child = status_button
+        };
+        status_button_revealer.reveal_child = true;
 
         //  library_view = new PiholeController.LibraryView ();
         //  library_view.game_selected.connect (on_game_selected);
@@ -69,7 +76,7 @@ public class PiholeController.MainWindow : Adw.ApplicationWindow {
         var header_bar = new Adw.HeaderBar () {
             title_widget = view_switcher
         };
-        header_bar.pack_start (import_button);
+        header_bar.pack_start (status_button_revealer);
         header_bar.pack_end (menu_button);
 
         var toolbar_view = new Adw.ToolbarView () {
@@ -157,6 +164,10 @@ public class PiholeController.MainWindow : Adw.ApplicationWindow {
 
     public void on_top_items_received (int64 database_id, PiholeController.TopItems top_items) {
         home_view.on_top_items_received (database_id, top_items);
+    }
+
+    public void on_time_series_data_received (int64 database_id, PiholeController.TimeSeriesData time_series_data) {
+        home_view.on_time_series_data_received (database_id, time_series_data);
     }
 
     public void on_server_removed (int64 database_id) {

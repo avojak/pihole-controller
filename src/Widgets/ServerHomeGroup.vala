@@ -27,6 +27,9 @@ public class PiholeController.ServerHomeGroup : Adw.Bin {
     private Gtk.ColumnView top_ads_table;
     private GLib.ListStore top_ads_list_store;
 
+    //  private LiveChart.Serie permitted_serie;
+    //  private LiveChart.Serie blocked_serie;
+
     public ServerHomeGroup (PiholeController.ServerConnectionDetails connection_details) {
         Object (
             connection_details: connection_details
@@ -190,8 +193,32 @@ public class PiholeController.ServerHomeGroup : Adw.Bin {
         top_items_flow_box.append (top_queries_tile);
         top_items_flow_box.append (top_ads_tile);
 
+        //  var config = new LiveChart.Config();
+        //  config.y_axis.unit = "MB";
+        //  config.x_axis.tick_length = 60;
+        //  config.x_axis.tick_interval = 10;
+        //  config.x_axis.lines.visible = false;
+        //  config.x_axis.show_fraction = false;
+
+        //  var queries_chart = new LiveChart.Chart (config) {
+        //      hexpand = true,
+        //      vexpand = true
+        //  };
+
+        //  var queries_chart = new LiveChart.Static.StaticChart () {
+        //      hexpand = true,
+        //      vexpand = true
+        //  };
+
+        //  permitted_serie = new LiveChart.Static.StaticSerie (_("Permitted"), new LiveChart.Bar ());
+        //  blocked_serie = new LiveChart.Static.StaticSerie (_("Blocked"), new LiveChart.Bar ());
+
+        //  queries_chart.add_serie(permitted_serie);
+        //  queries_chart.add_serie(blocked_serie);
+
         var box = new Gtk.Box (Gtk.Orientation.VERTICAL, 16);
         box.append (summary_flow_box);
+        //  box.append (queries_chart);
         box.append (top_items_flow_box);
 
         child = box;
@@ -211,6 +238,12 @@ public class PiholeController.ServerHomeGroup : Adw.Bin {
     public void update_top_items (PiholeController.TopItems top_items) {
         update_top_queries (top_items.top_queries);
         update_top_ads (top_items.top_ads);
+    }
+
+    public void update_time_series_data (PiholeController.TimeSeriesData time_series_data) {
+        foreach (var entry in time_series_data.domains_over_time.entries) {
+            //  permitted_serie.add (entry.value);
+        }
     }
 
     private void update_top_queries (Gee.Map<string, int64?> top_queries) {

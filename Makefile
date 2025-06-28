@@ -9,7 +9,7 @@ FLATHUB_FLATPAK_REMOTE_URL  := https://flathub.org/repo/flathub.flatpakrepo
 FLATHUB_FLATPAK_REMOTE_NAME := flathub
 # GNOME_NIGHTLY_FLATPAK_REMOTE_URL  := https://nightly.gnome.org/gnome-nightly.flatpakrepo
 # GNOME_NIGHTLY_FLATPAK_REMOTE_NAME := gnome-nightly
-FLATPAK_PLATFORM_VERSION    := 46
+FLATPAK_PLATFORM_VERSION    := 47
 
 BUILD_DIR        := build
 NINJA_BUILD_FILE := $(BUILD_DIR)/build.ninja

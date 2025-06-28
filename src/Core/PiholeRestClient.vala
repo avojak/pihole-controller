@@ -82,6 +82,19 @@ public class PiholeController.Core.PiholeRestClient : GLib.Object {
         return response;
     }
 
+    public async PiholeController.TimeSeriesData? get_time_series_data () {
+        PiholeController.TimeSeriesData? response = null;
+        GLib.SourceFunc callback = get_time_series_data.callback;
+        new GLib.Thread<void> ("get-over-time-data-%s".printf (connection_details.id.to_string ()), () => {
+            response = http_get ({{"overTimeData10mins", ""}}, (root) => {
+                return new PiholeController.TimeSeriesData.from_json (root);
+            }) as PiholeController.TimeSeriesData;
+            Idle.add ((owned) callback);
+        });
+        yield;
+        return response;
+    }
+
     private GLib.Object? http_get (QueryParam[] query_params, ResponseDeserializer deserialize_func, bool requires_auth = true) {
         if (requires_auth && (connection_details.api_token == null)) {
             warning ("Requested call requires API token, but none provided");

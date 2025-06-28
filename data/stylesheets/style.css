@@ -4,21 +4,38 @@
  */
 
 .statistics-card {
-    color: rgb(255, 255, 255);
+  color: rgb(255, 255, 255);
 }
 
 .total-queries-card {
-    background-color: @blue_3;
+  background-color: @blue_3;
 }
 
 .queries-blocked-card {
-    background-color: @red_3;
+  background-color: @red_3;
 }
 
 .percent-blocked-card {
-    background-color: @orange_3;
+  background-color: @orange_3;
 }
 
 .blocklist-card {
-    background-color: @green_3;
+  background-color: @green_3;
+}
+
+/* Blocking status button */
+
+.image-text-button.opaque.success {
+  background-color: @success_bg_color;
+  color: @success_fg_color;
+}
+
+.image-text-button.opaque.warning {
+  background-color: @warning_bg_color;
+  color: @warning_fg_color;
+}
+
+.image-text-button.opaque.error {
+  background-color: @error_bg_color;
+  color: @error_fg_color;
 }

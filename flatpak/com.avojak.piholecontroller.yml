@@ -1,7 +1,7 @@
 app-id: com.avojak.piholecontroller.Devel
 
 runtime: org.gnome.Platform
-runtime-version: '46'
+runtime-version: '47'
 sdk: org.gnome.Sdk
 
 command: com.avojak.piholecontroller.Devel
@@ -24,6 +24,13 @@ cleanup:
   - '*.a'
 
 modules:
+  # - name: live-chart
+  #   buildsystem: meson
+  #   sources:
+  #     - type: git
+  #       url: https://github.com/lcallarec/live-chart.git
+  #       tag: '1.10.0'
+
   - name: librest
     buildsystem: meson
     config-opts:

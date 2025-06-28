@@ -37,6 +37,15 @@ RUN dnf install -y \
     libsecret-devel \
     rest-devel
 
+RUN wget https://github.com/lcallarec/live-chart/archive/refs/tags/1.10.0.tar.gz && \
+    tar -xzf 1.10.0.tar.gz && \
+    pushd live-chart-1.10.0 && \
+    meson -Dprefix=/usr build && \
+    ninja -C build && \
+    ninja -C build install && \
+    popd && \
+    rm -rf 1.10.0.tar.gz  live-chart-1.10.0
+
 # Setup non-root user
 RUN groupadd -g $USER_GID $USERNAME && \
     useradd -u $USER_UID -g $USER_GID -m $USERNAME

@@ -8,6 +8,8 @@
   </gresource>
   <gresource prefix="@RESOURCE_PATH@icons/scalable/actions/">
     <file preprocess="xml-stripblanks" alias="shield-warning-symbolic.svg">assets/icons/shield-warning-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="shield-danger-symbolic.svg">assets/icons/shield-danger-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="shield-safe-symbolic.svg">assets/icons/shield-safe-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="hand-openyay-symbolic.svg">assets/icons/hand-openyay-symbolic.svg</file>
     <file preprocess="xml-stripblanks" alias="search-global-symbolic.svg">assets/icons/search-global-symbolic.svg</file>
   </gresource>

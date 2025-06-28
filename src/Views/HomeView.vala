@@ -61,6 +61,14 @@ public class PiholeController.HomeView : Adw.Bin {
         home_groups.get (database_id.to_string ()).update_top_items (top_items);
     }
 
+    public void on_time_series_data_received (int64 database_id, PiholeController.TimeSeriesData time_series_data) {
+        if (!home_groups.has_key (database_id.to_string ())) {
+            warning ("No home group found for database id: %s", database_id.to_string ());
+            return;
+        }
+        home_groups.get (database_id.to_string ()).update_time_series_data (time_series_data);
+    }
+
     public void add_server (PiholeController.ServerConnectionDetails connection_details) {
         if (home_groups.has_key (connection_details.id.to_string ())) {
             warning ("A server home group already exists for server %s", connection_details.id.to_string ());

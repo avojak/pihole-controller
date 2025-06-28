@@ -37,6 +37,7 @@ public class PiholeController.Core.ServerConnection : GLib.Object {
                 poll_server_version ();
                 poll_summary_data ();
                 poll_top_items ();
+                poll_time_series_data ();
                 Thread.usleep ((ulong) GLib.TimeSpan.SECOND * 5); // 5 seconds
             }
         });
@@ -46,6 +47,7 @@ public class PiholeController.Core.ServerConnection : GLib.Object {
         connection_details.notify["api-token"].connect (() => {
             poll_summary_data ();
             poll_top_items ();
+            poll_time_series_data ();
         });
     }
 
@@ -87,9 +89,21 @@ public class PiholeController.Core.ServerConnection : GLib.Object {
         });
     }
 
+    private void poll_time_series_data () {
+        rest_client.get_time_series_data.begin ((obj, res) => {
+            var time_series_data = rest_client.get_time_series_data.end (res);
+            if (time_series_data == null) {
+                debug ("null");
+                return;
+            }
+            time_series_data_received (time_series_data);
+        });
+    }
+
     public signal void server_version_received (PiholeController.ServerVersion server_version);
     public signal void summary_data_received (PiholeController.SummaryData summary_data);
     public signal void top_items_received (PiholeController.TopItems top_items);
+    public signal void time_series_data_received (PiholeController.TimeSeriesData time_series_data);
     public signal void closed ();
 
 }

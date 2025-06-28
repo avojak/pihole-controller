@@ -32,6 +32,9 @@ public class PiholeController.Core.ServerConnectionManager : GLib.Object {
         connection.top_items_received.connect ((top_items) => {
             top_items_received (connection_details.id, top_items);
         });
+        connection.time_series_data_received.connect ((time_series_data) => {
+            time_series_data_received (connection_details.id, time_series_data);
+        });
         connection.closed.connect (() => {
             connections.unset (database_id.to_string (), null);
         });
@@ -74,7 +77,8 @@ public class PiholeController.Core.ServerConnectionManager : GLib.Object {
     }
 
     public signal void server_version_received (int64 database_id, PiholeController.ServerVersion server_version);
-    public signal void summary_data_received (int64 database_id, PiholeController.SummaryData summary_Data);
+    public signal void summary_data_received (int64 database_id, PiholeController.SummaryData summary_data);
     public signal void top_items_received (int64 database_id, PiholeController.TopItems top_items);
+    public signal void time_series_data_received (int64 database_id, PiholeController.TimeSeriesData time_series_data);
 
 }

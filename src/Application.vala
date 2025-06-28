@@ -48,6 +48,7 @@ public class PiholeController.Application : Adw.Application {
         client.connection_manager.server_version_received.connect (main_window.on_server_version_received);
         client.connection_manager.summary_data_received.connect (main_window.on_summary_data_received);
         client.connection_manager.top_items_received.connect (main_window.on_top_items_received);
+        client.connection_manager.time_series_data_received.connect (main_window.on_time_series_data_received);
 
         client.server_repository.server_removed.connect (main_window.on_server_removed);
         client.server_repository.server_removed.connect (client.connection_manager.close);
